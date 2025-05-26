@@ -1,0 +1,221 @@
+* {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #eee;
+            font-family: Helvetica;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2196F3;
+            text-shadow: -5px 5px 16px #009fff;
+        }
+
+        h2 {
+            color: #2196F3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 60px;
+            word-break: break-word;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #111;
+            color: #fff;
+        }
+
+        #metas {
+            background-color: #155b94;
+            color: black;
+            font-size: large;
+        }
+
+        .bg-verde {
+            background-color: #2e7d32; /* verde escuro */
+            color: white;
+        }
+        .bg-vermelho {
+            background-color: #c62828; /* vermelho escuro */
+            color: white;
+        }
+
+
+        tr:nth-child(even) {
+            background-color: #222;
+        }
+
+        tr:hover {
+            background-color: #83aaff;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: #222;
+            color: #eee;
+            border: 1px solid #444;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0 20px 0;;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 1s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #1976D2;
+            color: black;
+        }
+
+        .observacoes {
+            background-color: #111;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .observacoes ul {
+            list-style: disc;
+            padding-left: 20px;
+        }
+
+        .observacoes li {
+            margin-bottom: 5px;
+        }
+
+        .topo {
+            display: flex;
+            margin-bottom: 30px;
+            flex-direction: column;
+        }
+
+        .topo h1 {
+            margin: 10px 0 0 0;
+            font-size: 24px;
+            flex: 1 1 100%;
+            text-align: center;
+        }
+
+        .links-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+
+        .links {
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: box-shadow 0.6s ease-in-out;
+        }
+
+        .links:hover {
+            color: black;
+            box-shadow: -6px 8px 15px 0px rgb(255 0 0);
+        }
+
+        #sair {
+            background-color: rgb(255, 61, 61);
+        }
+
+        #explicacoes {
+            background-color: rgb(63, 180, 33);
+        }
+
+        /* PARA TELAS MENORES */
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 13px;
+                padding: 8px;
+            }
+
+            button {
+                width: 100%;
+                font-size: 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .links {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            #metas {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .links {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            #metas {
+                font-size: 13px;
+            }
+
+            textarea {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            th, td {
+                font-size: 11px;
+            }
+
+            .links {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            #metas {
+                font-size: 12px;
+            }
+        }

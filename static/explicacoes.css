@@ -1,0 +1,185 @@
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #00010c;
+            color: #f1f5f9;
+            font-family: Helvetica;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+
+        header {
+                display: flex;
+                width: 90%;
+                justify-content: space-between;
+        }
+
+        span {
+            font-weight: bold;
+        }
+
+        .paginas {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .paginas a {
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: box-shadow 0.6s ease-in-out;
+        }
+
+        .paginas a:hover {
+            color: black;
+            box-shadow: -6px 8px 15px 0px rgb(255 0 0);
+        }
+
+        #painel {
+            background-color: #0ea5e9;
+        }
+
+        #sair {
+            background-color: rgb(255, 61, 61);
+        }
+
+
+        .container, .container2 {
+            max-width: 800px;
+            width: 100%;
+            background-color: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #45fc73;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #38f89e;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .botao-voltar {
+            align-self: flex-start;
+            background-color: #00ff63;
+            color: #0f172a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: background-color 0.6s ease-in-out;
+        }
+
+        .botao-voltar:hover {
+            background-color: #0ea5e9;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                gap: 30px;
+            }
+
+            .container, .container2 {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            .botao-voltar {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .paginas {
+                flex-direction: column;
+                justify-content: space-around;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 15px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .botao-voltar {
+                font-size: 13px;
+                padding: 7px 14px;
+            }
+
+            .paginas {
+                flex-direction: column;
+                justify-content: space-around;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container, .container2 {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            h2 {
+                font-size: 14px;
+            }
+
+            p {
+                font-size: 13px;
+            }
+
+            .botao-voltar {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .paginas {
+                flex-direction: column;
+                justify-content: space-around;
+            }
+        }

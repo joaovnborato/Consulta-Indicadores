@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Motorista</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='painel.css') }}">
+</head>
+
+<body>
+    <div class="topo">
+        <h1>Bem-vindo ao Painel de Indicadores</h1>
+        <div class="links-wrapper">
+            <a href="{{ url_for('explicacoes') }}" class="links" id="explicacoes">Explicações</a>
+            <a href="{{ url_for('logout') }}" class="links" id="sair">Sair</a>
+        </div>
+    </div>
+
+    <h2>Indicadores</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>% Devolução (PDV)</th>
+                <th>Dispersão (KM)</th>
+                <th>Rating</th>
+                <th>Reposição</th>
+                <th>Refugo (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dados %}
+                <tr>
+                    <td>{{ item.Data }}</td>
+                    <td>{{ item.Devolucao_Porcentagem }}</td>
+                    <td>{{ item.Dispersao_KM }}</td>
+                    <td>{{ item.Rating }}</td>
+                    <td>{{ item.Reposicao_Valor }}</td>
+                    <td>{{ item.Refugo_Porcentagem }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><strong>Média</strong></td>
+                <td class="{{ 'bg-vermelho' if medias['Devolucao_Porcentagem'] != '-' and medias['Devolucao_Porcentagem']|float > 1.7 else 'bg-verde' }}">
+                    {{ medias['Devolucao_Porcentagem'] if medias['Devolucao_Porcentagem'] != '-' else '-' }}{% if medias['Devolucao_Porcentagem'] != '-' %}%{% endif %}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Dispersao_KM|float > 10 else 'bg-verde' }}">
+                    {{ medias.Dispersao_KM }}%
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Rating|float < 4.98 else 'bg-verde' }}">
+                    {{ medias.Rating }}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Reposicao_Valor|float > 45 else 'bg-verde' }}">
+                    R${{ medias.Reposicao_Valor }}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias['Refugo_Porcentagem'] != '-' and medias['Refugo_Porcentagem']|float > 1.5 else 'bg-verde' }}">
+                    {{ medias['Refugo_Porcentagem'] if medias['Refugo_Porcentagem'] != '-' else '-' }}{% if medias['Refugo_Porcentagem'] != '-' %}%{% endif %}
+                </td>
+            </tr>
+            <tr id="metas">
+                <td><strong>Metas</strong></td>
+                <td>1.70%</td>
+                <td>10%</td>
+                <td>4.98</td>
+                <td>R$45,00</td>
+                <td>1.5</td>
+            </tr>
+        </tfoot>
+
+    </table>
+
+    <h2>Nova Observação</h2>
+    <form method="POST" action="{{ url_for('observacao') }}">
+        <textarea name="observacao" rows="4" placeholder="Escreva uma observação..."></textarea>
+        <button type="submit">Enviar Observação</button>
+    </form>
+
+    <h2>Observações Anteriores</h2>
+    <div class="observacoes">
+        {% if observacoes %}
+            <ul>
+                {% for obs in observacoes %}
+                    <li>{{ obs }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Não há observações registradas.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Explicações</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='explicacoes.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Explicando Indicadores e suas Metas</h1>
+        <div class="paginas">
+            <a href="{{ url_for('painel') }}" id="painel">Início</a>
+            <a href="{{ url_for('logout') }}" id="sair">Sair</a>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Detalhamento</h1>
+
+        <p>Bem-vindo à área de explicações! Aqui você encontrará informações importantes sobre como interpretar os indicadores e quais são as metas desejadas.</p>
+
+        <h2>Meta de Devolução</h2>
+        <span>• O que é: produtos planejados para entrega que não foram entregues</span>
+        <p>A meta de devolução é calculada em porcentagem por PDVs, diariamente, e é calculado uma média mensal.
+        <br>O Calculo base é feito desta forma: Pega-se a quantidade de PDVs listados para entrega, 
+        e subtrai-se pela quantidade de PDVs entregues, chegando ao resultado de quantos PDVs tiveram devolução.</p>
+
+        <h2>Meta de Dispersão (KM)</h2>
+        <span>• O que é: a quantidade de KMs percorrida além do planejado</span>
+        <p>A meta de dispersão é calculada em porcentagem de KMs andados a mais do estipulado, diariamente, e é calculado uma média mensal.
+        <br>O calculo base é feito desta forma: Pega-se a quilometragem feita por rota, 
+        e subtrai-se pela quilometragem prevista para a rota, 
+        chegando ao resultado de quantos quilometros foram andados além do estipulado, e calculando-se em porcentagem.</p>
+
+        <h2>Meta de Rating</h2>
+        <span>• O que é: avaliação dada pelos clientes via aplicativo (conta-se de 0 a 5)</span>
+        <p>A meta de rating é calculada em valores das avaliações realizadas pelos clientes, diariamente, 
+        e é calculado uma média mensal. 
+        <br>O calculo base é feito desta forma: Pega-se todas as avaliações realizadas para cada entrega, 
+        e calcula-se uma média mensal.</p>
+
+        <h2>Meta de Reposição</h2>
+        <span>• O que é: produtos não entregues (por qualquer motivo), que foram solicitados para nova entrega</span>
+        <p>A meta de reposição é calculada por valor (em R$), diariamente, e é calculado uma média mensal.
+        <br>O calculo base é feito desta forma: Pega-se o valor total de todos os produtos em reposição para o respectivo dia,
+         e calcula-se uma média mensal.</p>
+
+        <h2>Meta de Refugo</h2>
+        <span>• O que é: toda e qualquer garrafa que não esteja habilitada para o processo de fabricação do produto</span>
+        <p>A meta de refugo é calculada em porcentagem por quantidade de garrafas, diariamente, 
+        e é calculado uma média mensal.
+        <br>O calculo base é feito desta forma: Pega-se a quantidade total de garrafas de 300ML, 600ML, 
+        e 1L para entrega, calcula-se quantas de cada tipo houveram refugo e é feito uma porcentagem 
+        baseado na quantidade total. 
+        Então calcula-se uma média entre as três porcentagens (para cada tipo), 
+        chegando ao resultado de qual a porcentagem de refugo.</p>
+    </div>
+
+    <div class="container2">
+        <p>Se tiver dúvidas, sugestões ou contestações, você pode procurar seu supervisor, utilizar o canal de comunicação da empresa,
+            ou preencher o campo de <strong>Observações</strong>, disponibilizado no Painel.</p>
+        <a href="/painel" class="botao-voltar">Voltar ao Painel</a>
+    </div>
+</body>
+</html>
