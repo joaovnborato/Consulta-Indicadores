@@ -3,7 +3,7 @@ import pyodbc
 import os
 
 app = Flask(__name__)
-app.secret_key = 'chave-secreta-maxima'
+app.secret_key = os.getenv('SECRET_KEY', 'chave-padrao-fraca')
 
 def conectar_banco():
     try:
