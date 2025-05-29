@@ -30,7 +30,7 @@ def login():
         conexao = conectar_banco()
         if conexao:
             cursor = conexao.cursor()
-            cursor.execute("SELECT * FROM Motoristas WHERE ID_Motorista = ? AND CPF = ?", (id_motorista, senha))
+            cursor.execute("SELECT * FROM Motoristas WHERE ID_Motorista = %s AND CPF = %s", (id_motorista, senha))
             motorista = cursor.fetchone()
             cursor.close()
             conexao.close()
@@ -89,7 +89,7 @@ def painel():
                 LEFT JOIN Rating R ON D.ID_Motorista = R.ID_Motorista AND D.Data = R.Data
                 LEFT JOIN Reposicao P ON D.ID_Motorista = P.ID_Motorista AND D.Data = P.Data
                 LEFT JOIN Refugo F ON D.ID_Motorista = F.ID_Motorista AND D.Data = F.Data
-                WHERE D.ID_Motorista = ?
+                WHERE D.ID_Motorista = %s
                 ORDER BY D.Data ASC
             """, (id_motorista,))
             
@@ -103,7 +103,6 @@ def painel():
                 else:
                     data_formatada = "-"
 
-                # Remove % da devolução porcentagem para cálculo e exibição consistentes
                 devolucao_porcentagem_valor = linha.Devolucao_Porcentagem
                 if devolucao_porcentagem_valor is not None:
                     devolucao_porcentagem_valor = str(devolucao_porcentagem_valor).replace("%", "").strip()
@@ -121,7 +120,7 @@ def painel():
 
 
             # Buscar observações
-            cursor.execute("SELECT Texto FROM Observacoes WHERE ID_Motorista = ?", (id_motorista,))
+            cursor.execute("SELECT Texto FROM Observacoes WHERE ID_Motorista = %s", (id_motorista,))
             observacoes = [linha.Texto for linha in cursor.fetchall()]
 
         except Exception as e:
@@ -136,16 +135,14 @@ def painel():
     media_reposicao = calcular_media(dados_formatados, 'Reposicao_Valor', ignora_percentual=True)
     media_refugo = calcular_media(dados_formatados, 'Refugo_Porcentagem', ignora_percentual=True)
 
-
-
     return render_template('painel.html', dados=dados_formatados, observacoes=observacoes,
-                       medias={
-                           'Devolucao_Porcentagem': media_devolucao_porcentagem,
-                           'Dispersao_KM': media_dispersao_km,
-                           'Rating': media_rating,
-                           'Reposicao_Valor': media_reposicao,
-                           'Refugo_Porcentagem': media_refugo
-})
+                           medias={
+                               'Devolucao_Porcentagem': media_devolucao_porcentagem,
+                               'Dispersao_KM': media_dispersao_km,
+                               'Rating': media_rating,
+                               'Reposicao_Valor': media_reposicao,
+                               'Refugo_Porcentagem': media_refugo
+                           })
 
 @app.route('/explicacoes')
 def explicacoes():
@@ -166,7 +163,7 @@ def observacao():
         if conexao:
             cursor = conexao.cursor()
             try:
-                cursor.execute("INSERT INTO Observacoes (ID_Motorista, Texto) VALUES (?, ?)", (id_motorista, texto))
+                cursor.execute("INSERT INTO Observacoes (ID_Motorista, Texto) VALUES (%s, %s)", (id_motorista, texto))
                 conexao.commit()
             except Exception as e:
                 print("Erro ao salvar observação:", e)
@@ -183,7 +180,3 @@ def logout():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-
-
-
-    
