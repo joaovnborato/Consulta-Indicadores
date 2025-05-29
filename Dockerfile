@@ -1,32 +1,33 @@
 FROM python:3.11-slim
 
+# Atualiza pacotes e instala dependências necessárias
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
+    gnupg2 \
     curl \
-    gnupg \
     apt-transport-https \
     unixodbc \
     unixodbc-dev \
-    libpq-dev \
-    libsqlite3-dev \
-    libsasl2-dev \
+    libgssapi-krb5-2 \
     libssl-dev \
-    libffi-dev \
-    python3-dev \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18
+# Adiciona o repositório da Microsoft de forma segura (sem usar apt-key)
+RUN curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg
 
+# Instala o driver ODBC da Microsoft
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
+# Cria o diretório da aplicação e copia o conteúdo
 WORKDIR /app
 COPY . /app
 
+# Instala dependências Python
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 EXPOSE 10000
 
+# Comando para iniciar a aplicação com gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
