@@ -29,7 +29,7 @@ def login():
 
         conexao = conectar_banco()
         if conexao:
-            cursor = conexao.cursor()
+            cursor = conexao.cursor(as_dict=True)
             cursor.execute("SELECT * FROM Motoristas WHERE ID_Motorista = %s AND CPF = %s", (id_motorista, senha))
             motorista = cursor.fetchone()
             cursor.close()
@@ -61,7 +61,6 @@ def calcular_media(lista, chave, ignora_percentual=False):
     media = sum(valores) / len(valores)
     return round(media, 2)
 
-
 @app.route('/painel')
 def painel():
     if 'id_motorista' not in session:
@@ -73,7 +72,7 @@ def painel():
     observacoes = []
 
     if conexao:
-        cursor = conexao.cursor()
+        cursor = conexao.cursor(as_dict=True)
         try:
             # Buscar indicadores
             cursor.execute("""
@@ -96,14 +95,14 @@ def painel():
             resultados = cursor.fetchall()
 
             for linha in resultados:
-                data = linha.DataISO
+                data = linha['DataISO']
                 if data:
                     partes = data.split('-')
                     data_formatada = f"{partes[2]}-{partes[1]}-{partes[0]}"
                 else:
                     data_formatada = "-"
 
-                devolucao_porcentagem_valor = linha.Devolucao_Porcentagem
+                devolucao_porcentagem_valor = linha['Devolucao_Porcentagem']
                 if devolucao_porcentagem_valor is not None:
                     devolucao_porcentagem_valor = str(devolucao_porcentagem_valor).replace("%", "").strip()
                 else:
@@ -112,16 +111,15 @@ def painel():
                 dados_formatados.append({
                     'Data': data_formatada,
                     'Devolucao_Porcentagem': devolucao_porcentagem_valor,
-                    'Dispersao_KM': linha.Dispersao_KM if linha.Dispersao_KM is not None else "-",
-                    'Rating': linha.Rating if linha.Rating is not None else "-",
-                    'Reposicao_Valor': linha.Reposicao_Valor if linha.Reposicao_Valor is not None else "-",
-                    'Refugo_Porcentagem': linha.Refugo_Porcentagem if linha.Refugo_Porcentagem is not None else "-"
+                    'Dispersao_KM': linha['Dispersao_KM'] if linha['Dispersao_KM'] is not None else "-",
+                    'Rating': linha['Rating'] if linha['Rating'] is not None else "-",
+                    'Reposicao_Valor': linha['Reposicao_Valor'] if linha['Reposicao_Valor'] is not None else "-",
+                    'Refugo_Porcentagem': linha['Refugo_Porcentagem'] if linha['Refugo_Porcentagem'] is not None else "-"
                 })
-
 
             # Buscar observações
             cursor.execute("SELECT Texto FROM Observacoes WHERE ID_Motorista = %s", (id_motorista,))
-            observacoes = [linha.Texto for linha in cursor.fetchall()]
+            observacoes = [linha['Texto'] for linha in cursor.fetchall()]
 
         except Exception as e:
             print("Erro ao consultar o banco:", e)
@@ -136,13 +134,13 @@ def painel():
     media_refugo = calcular_media(dados_formatados, 'Refugo_Porcentagem', ignora_percentual=True)
 
     return render_template('painel.html', dados=dados_formatados, observacoes=observacoes,
-                           medias={
-                               'Devolucao_Porcentagem': media_devolucao_porcentagem,
-                               'Dispersao_KM': media_dispersao_km,
-                               'Rating': media_rating,
-                               'Reposicao_Valor': media_reposicao,
-                               'Refugo_Porcentagem': media_refugo
-                           })
+                       medias={
+                           'Devolucao_Porcentagem': media_devolucao_porcentagem,
+                           'Dispersao_KM': media_dispersao_km,
+                           'Rating': media_rating,
+                           'Reposicao_Valor': media_reposicao,
+                           'Refugo_Porcentagem': media_refugo
+})
 
 @app.route('/explicacoes')
 def explicacoes():
@@ -161,7 +159,7 @@ def observacao():
     if texto:
         conexao = conectar_banco()
         if conexao:
-            cursor = conexao.cursor()
+            cursor = conexao.cursor(as_dict=True)
             try:
                 cursor.execute("INSERT INTO Observacoes (ID_Motorista, Texto) VALUES (%s, %s)", (id_motorista, texto))
                 conexao.commit()
