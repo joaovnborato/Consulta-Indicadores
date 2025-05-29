@@ -16,6 +16,9 @@ def conectar_banco():
             database=database
         )
         return conexao
+    except Exception as e:
+        print("Erro ao conectar:", e)
+        return None
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
