@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
-import pyodbc
+import pymssql
 import os
 
 app = Flask(__name__)
@@ -7,12 +7,15 @@ app.secret_key = os.getenv('SECRET_KEY', 'chave-padrao-fraca')
 
 def conectar_banco():
     try:
-        connection_string = os.getenv('DATABASE_URL')
-        conexao = pyodbc.connect(connection_string)
+        conn_str = os.getenv('DATABASE_URL')
+        server, user, password, database = conn_str.split(';')
+        conexao = pymssql.connect(
+            server=server,
+            user=user,
+            password=password,
+            database=database
+        )
         return conexao
-    except Exception as e:
-        print("Erro ao conectar:", e)
-        return None
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
