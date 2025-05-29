@@ -1,26 +1,26 @@
-# Usa imagem base leve com Python 3.10
 FROM python:3.10-slim
 
-# Instala dependências básicas e o driver ODBC 18 da Microsoft
-RUN apt-get update && \
-    apt-get install -y curl gnupg apt-transport-https unixodbc-dev && \
-    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y msodbcsql18 && \
+# Atualiza e instala dependências básicas
+RUN apt-get update && apt-get install -y \
+    curl gnupg2 apt-transport-https unixodbc-dev ca-certificates && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/keyrings/microsoft.gpg && \
+    curl -sSL https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    echo "deb [signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/11/prod bullseye main" > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Define diretório da aplicação
+# Define o diretório da aplicação
 WORKDIR /app
 
-# Copia o código da aplicação
+# Copia o código
 COPY . /app
 
-# Instala dependências do Python
+# Instala dependências Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expõe a porta usada pela aplicação
+# Expõe a porta
 EXPOSE 10000
 
-# Comando para iniciar o app via Gunicorn
+# Inicia o servidor com gunicorn
 CMD ["gunicorn", "app:app", "-b", "0.0.0.0:10000"]
