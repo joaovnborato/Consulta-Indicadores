@@ -52,7 +52,7 @@
                 <td class="{{ 'bg-vermelho' if medias.Rating|float < 4.98 else 'bg-verde' }}">
                     {{ medias.Rating }}
                 </td>
-                <td class="{{ 'bg-vermelho' if medias.Reposicao_Valor|float > 45 else 'bg-verde' }}">
+                <td class="{{ 'bg-vermelho' if medias.Reposicao_Valor|float > 360 else 'bg-verde' }}">
                     R${{ medias.Reposicao_Valor }}
                 </td>
                 <td class="{{ 'bg-vermelho' if medias['Refugo_Porcentagem'] != '-' and medias['Refugo_Porcentagem']|float > 1.5 else 'bg-verde' }}">
@@ -64,7 +64,7 @@
                 <td>1.70%</td>
                 <td>10%</td>
                 <td>4.98</td>
-                <td>R$45,00</td>
+                <td>R$360,00</td>
                 <td>1.5</td>
             </tr>
         </tfoot>
