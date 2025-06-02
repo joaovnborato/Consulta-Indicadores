@@ -37,11 +37,18 @@ def login():
 
             if motorista:
                 session['id_motorista'] = id_motorista
-                return redirect(url_for('painel'))
+
+                # Verifica se o ID é de supervisor
+                if id_motorista.upper() in ['001', '002']:
+                    return redirect(url_for('painel_supervisor'))
+                else:
+                    return redirect(url_for('painel'))
+
             else:
                 mensagem = 'ID ou Senha incorretos.'
 
     return render_template('login.html', mensagem=mensagem)
+
 
 def calcular_media(lista, chave, ignora_percentual=False):
     valores = []
@@ -79,10 +86,10 @@ def painel():
                 SELECT 
                     CONVERT(varchar, D.Data, 23) AS DataISO, 
                     D.Devolucao_Porcentagem, 
-                    S.Dispersao_KM,
+                    ISNULL(S.Dispersao_KM, 0) AS Dispersao_KM,
                     R.Rating,
-                    P.Reposicao_Valor,
-                    F.Refugo_Porcentagem
+                    ISNULL(P.Reposicao_Valor, 0) AS Reposicao_Valor,
+                    ISNULL(F.Refugo_Porcentagem, 0) AS Refugo_Porcentagem
                 FROM Devolucao D
                 LEFT JOIN Dispersao S ON D.ID_Motorista = S.ID_Motorista AND D.Data = S.Data
                 LEFT JOIN Rating R ON D.ID_Motorista = R.ID_Motorista AND D.Data = R.Data
@@ -108,14 +115,28 @@ def painel():
                 else:
                     devolucao_porcentagem_valor = "-"
 
+
+                if devolucao_porcentagem_valor == "-" or devolucao_porcentagem_valor == "" or devolucao_porcentagem_valor is None:
+                    dispersao = "-"
+                    reposicao = "-"
+                    refugo = "-"
+                else:
+                    dispersao = linha['Dispersao_KM'] if linha['Dispersao_KM'] is not None else 0
+                    reposicao = linha['Reposicao_Valor'] if linha['Reposicao_Valor'] is not None else 0
+                    refugo = linha['Refugo_Porcentagem'] if linha['Refugo_Porcentagem'] is not None else 0
+
+                # Rating sempre entra, independente da Devolução
+                rating = linha['Rating'] if linha['Rating'] is not None else "-"
+
                 dados_formatados.append({
                     'Data': data_formatada,
                     'Devolucao_Porcentagem': devolucao_porcentagem_valor,
-                    'Dispersao_KM': linha['Dispersao_KM'] if linha['Dispersao_KM'] is not None else "-",
-                    'Rating': linha['Rating'] if linha['Rating'] is not None else "-",
-                    'Reposicao_Valor': linha['Reposicao_Valor'] if linha['Reposicao_Valor'] is not None else "-",
-                    'Refugo_Porcentagem': linha['Refugo_Porcentagem'] if linha['Refugo_Porcentagem'] is not None else "-"
+                    'Dispersao_KM': dispersao,
+                    'Rating': rating,
+                    'Reposicao_Valor': reposicao,
+                    'Refugo_Porcentagem': refugo
                 })
+
 
             # Buscar observações
             cursor.execute("SELECT Texto FROM Observacoes WHERE ID_Motorista = %s", (id_motorista,))
@@ -141,6 +162,127 @@ def painel():
                            'Reposicao_Valor': media_reposicao,
                            'Refugo_Porcentagem': media_refugo
 })
+
+
+@app.route('/painel_supervisor', methods=['GET', 'POST'])
+def painel_supervisor():
+    conexao = conectar_banco()
+    funcionarios = []
+    dados_formatados = []
+    indicadores = None
+    mensagem = ''
+
+    if conexao:
+        cursor = conexao.cursor(as_dict=True)
+
+        # Buscar lista de motoristas para o select
+        cursor.execute("""
+            SELECT DISTINCT M.ID_Motorista, M.Nome_Completo
+            FROM Motoristas M
+            WHERE M.ID_Motorista IN (
+                SELECT ID_Motorista FROM Devolucao
+                UNION
+                SELECT ID_Motorista FROM Dispersao
+                UNION
+                SELECT ID_Motorista FROM Rating
+                UNION
+                SELECT ID_Motorista FROM Reposicao
+                UNION
+                SELECT ID_Motorista FROM Refugo
+            )
+            ORDER BY M.Nome_Completo
+        """)
+
+        funcionarios = cursor.fetchall()
+
+        # Se o supervisor escolheu um motorista para visualizar indicadores
+        if request.method == 'POST':
+            id_selecionado = request.form.get('id_motorista_selecionado')
+
+            # Buscar indicadores do motorista selecionado
+            cursor.execute("""
+                SELECT 
+                    CONVERT(varchar, D.Data, 23) AS DataISO, 
+                    D.Devolucao_Porcentagem, 
+                    ISNULL(S.Dispersao_KM, 0) AS Dispersao_KM,
+                    R.Rating,
+                    ISNULL(P.Reposicao_Valor, 0) AS Reposicao_Valor,
+                    ISNULL(F.Refugo_Porcentagem, 0) AS Refugo_Porcentagem
+                FROM Devolucao D
+                LEFT JOIN Dispersao S ON D.ID_Motorista = S.ID_Motorista AND D.Data = S.Data
+                LEFT JOIN Rating R ON D.ID_Motorista = R.ID_Motorista AND D.Data = R.Data
+                LEFT JOIN Reposicao P ON D.ID_Motorista = P.ID_Motorista AND D.Data = P.Data
+                LEFT JOIN Refugo F ON D.ID_Motorista = F.ID_Motorista AND D.Data = F.Data
+                WHERE D.ID_Motorista = %s
+                ORDER BY D.Data ASC
+            """, (id_selecionado,))
+            
+            resultados = cursor.fetchall()
+
+            for linha in resultados:
+                data = linha['DataISO']
+                if data:
+                    partes = data.split('-')
+                    data_formatada = f"{partes[2]}-{partes[1]}-{partes[0]}"
+                else:
+                    data_formatada = "-"
+
+                devolucao_porcentagem_valor = linha['Devolucao_Porcentagem']
+                if devolucao_porcentagem_valor is None or devolucao_porcentagem_valor == "":
+                    devolucao_porcentagem_valor = "-"
+
+                if devolucao_porcentagem_valor == "-" or devolucao_porcentagem_valor == "" or devolucao_porcentagem_valor is None:
+                    dispersao = "-"
+                    reposicao = "-"
+                    refugo = "-"
+                else:
+                    dispersao = linha['Dispersao_KM'] if linha['Dispersao_KM'] is not None else 0
+                    reposicao = linha['Reposicao_Valor'] if linha['Reposicao_Valor'] is not None else 0
+                    refugo = linha['Refugo_Porcentagem'] if linha['Refugo_Porcentagem'] is not None else 0
+
+                # Rating sempre entra, independente da Devolução
+                rating = linha['Rating'] if linha['Rating'] is not None else "-"
+
+                dados_formatados.append({
+                    'Data': data_formatada,
+                    'Devolucao_Porcentagem': devolucao_porcentagem_valor,
+                    'Dispersao_KM': dispersao,
+                    'Rating': rating,
+                    'Reposicao_Valor': reposicao,
+                    'Refugo_Porcentagem': refugo
+                })
+
+
+        cursor.close()
+        conexao.close()
+
+    indicadores = dados_formatados
+        # Calcular médias
+    media_devolucao_porcentagem = calcular_media(dados_formatados, 'Devolucao_Porcentagem', ignora_percentual=True)
+    media_dispersao_km = calcular_media(dados_formatados, 'Dispersao_KM', ignora_percentual=True)
+    media_rating = calcular_media(dados_formatados, 'Rating')
+    media_reposicao = calcular_media(dados_formatados, 'Reposicao_Valor', ignora_percentual=True)
+    media_refugo = calcular_media(dados_formatados, 'Refugo_Porcentagem', ignora_percentual=True)
+
+    medias = {
+        'Devolucao_Porcentagem': media_devolucao_porcentagem,
+        'Dispersao_KM': media_dispersao_km,
+        'Rating': media_rating,
+        'Reposicao_Valor': media_reposicao,
+        'Refugo_Porcentagem': media_refugo
+    }
+
+    return render_template(
+        'painel_supervisor.html',
+        funcionarios=funcionarios,
+        indicadores=dados_formatados,
+        mensagem=mensagem,
+        medias=medias
+    )
+
+
+
+
 
 @app.route('/explicacoes')
 def explicacoes():

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Painel Supervisor - Visualizar Indicadores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='painel_supervisor.css') }}">
+</head>
+<body>
+    <div class="topo">
+        <h1>Painel do Supervisor</h1>
+        <div class="links-wrapper">
+            <a href="{{ url_for('logout') }}" class="links" id="sair">Sair</a>
+        </div>
+    </div>
+
+    <h2>Selecionar Funcionário</h2>
+    <form method="POST">
+        <select name="id_motorista_selecionado" required>
+            <option value="" disabled selected>Escolha um funcionário</option>
+            {% for f in funcionarios %}
+                <option value="{{ f.ID_Motorista }}">{{ f.Nome_Completo }} ({{ f.ID_Motorista }})</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Ver Indicadores</button>
+    </form>
+
+    {% if mensagem %}
+        <p>{{ mensagem }}</p>
+    {% endif %}
+
+    {% if indicadores %}
+        <h2>Indicadores do Funcionário Selecionado</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>% Devolução (PDV)</th>
+                    <th>Dispersão (KM)</th>
+                    <th>Rating</th>
+                    <th>Reposição</th>
+                    <th>Refugo (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in indicadores %}
+                <tr>
+                    <td>{{ item.Data }}</td>
+                    <td>{{ item.Devolucao_Porcentagem }}</td>
+                    <td>{{ item.Dispersao_KM }}</td>
+                    <td>{{ item.Rating }}</td>
+                    <td>{{ item.Reposicao_Valor }}</td>
+                    <td>{{ item.Refugo_Porcentagem }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+            <tfoot>
+            <tr>
+                <td><strong>Média</strong></td>
+                <td class="{{ 'bg-vermelho' if medias['Devolucao_Porcentagem'] != '-' and medias['Devolucao_Porcentagem']|float > 1.7 else 'bg-verde' }}">
+                    {{ medias['Devolucao_Porcentagem'] if medias['Devolucao_Porcentagem'] != '-' else '-' }}{% if medias['Devolucao_Porcentagem'] != '-' %}%{% endif %}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Dispersao_KM|float > 10 else 'bg-verde' }}">
+                    {{ medias.Dispersao_KM }}%
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Rating|float < 4.98 else 'bg-verde' }}">
+                    {{ medias.Rating }}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias.Reposicao_Valor|float > 360 else 'bg-verde' }}">
+                    R${{ medias.Reposicao_Valor }}
+                </td>
+                <td class="{{ 'bg-vermelho' if medias['Refugo_Porcentagem'] != '-' and medias['Refugo_Porcentagem']|float > 1.5 else 'bg-verde' }}">
+                    {{ medias['Refugo_Porcentagem'] if medias['Refugo_Porcentagem'] != '-' else '-' }}{% if medias['Refugo_Porcentagem'] != '-' %}%{% endif %}
+                </td>
+            </tr>
+            <tr id="metas">
+                <td><strong>Metas</strong></td>
+                <td>1.70%</td>
+                <td>10%</td>
+                <td>4.98</td>
+                <td>R$360,00</td>
+                <td>1.5</td>
+            </tr>
+        </tfoot>
+
+        </table>
+    {% endif %}
+</body>
+</html>
