@@ -69,11 +69,13 @@ Esses filtros tornam a visualização mais prática e direcionada.
 > Abaixo, exemplo de onde você pode adicionar até **5 imagens** da interface:
 
 ```markdown
-![Tela de Login](images/print_login.png)
-![Painel de Indicadores](images/print_painel.png)
-![Filtro por Data](images/print_filtro_data.png)
-![Envio de Observações](images/print_observacoes.png)
-![Visualização para Gerente](images/print_gerente.png)
+![Tela de Login](images/login.png)
+![Painel de Indicadores 1/2](images/painel1.png)
+![Painel de Indicadores 2/2](images/painel2.png)
+![Tela de Detalhamento 1/2](images/tela-explicacoes1.png)
+![Tela de Detalhamento 2/2](images/tela-explicacoes2.png)
+![Painel do Gerente 1/2](images/tela-gerente1.png)
+![Painel do Gerente 2/2](images/tela-gerente2.png)
 ```
 
 ---
