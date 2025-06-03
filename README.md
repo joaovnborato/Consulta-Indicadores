@@ -66,10 +66,10 @@ Esses filtros tornam a visualização mais prática e direcionada.
 
 ## 🖼️ Prints da Interface
 
-> Abaixo, exemplo de onde você pode adicionar até **5 imagens** da interface:
+> Abaixo, print de algumas **telas da interface**:
 
 ```markdown
-![Tela de Login](images/login.png)
+![Tela de Login](https://github.com/joaovnborato/Consulta-Indicadores/blob/main/images/login.png)
 ![Painel de Indicadores 1/2](images/painel1.png)
 ![Painel de Indicadores 2/2](images/painel2.png)
 ![Tela de Detalhamento 1/2](images/tela-explicacoes1.png)
