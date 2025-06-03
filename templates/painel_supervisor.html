@@ -56,7 +56,7 @@
             
             <tfoot>
             <tr>
-                <td><strong>Média</strong></td>
+                <td><strong>Consolidado</strong></td>
                 <td class="{{ 'bg-vermelho' if medias['Devolucao_Porcentagem'] != '-' and medias['Devolucao_Porcentagem']|float > 1.7 else 'bg-verde' }}">
                     {{ medias['Devolucao_Porcentagem'] if medias['Devolucao_Porcentagem'] != '-' else '-' }}{% if medias['Devolucao_Porcentagem'] != '-' %}%{% endif %}
                 </td>

@@ -14,7 +14,7 @@ def conectar_banco():
             user=user,
             password=password,
             database=database
-        )
+        )    
         return conexao
     except Exception as e:
         print("Erro ao conectar:", e)
@@ -132,8 +132,8 @@ def painel():
                     'Data': data_formatada,
                     'Devolucao_Porcentagem': devolucao_porcentagem_valor,
                     'Dispersao_KM': dispersao,
-                    'Rating': rating,
-                    'Reposicao_Valor': reposicao,
+                    'Rating': rating.replace(',00', ''),
+                    'Reposicao_Valor': reposicao.replace('.', ','),
                     'Refugo_Porcentagem': refugo
                 })
 
@@ -151,7 +151,11 @@ def painel():
     media_devolucao_porcentagem = calcular_media(dados_formatados, 'Devolucao_Porcentagem', ignora_percentual=True)
     media_dispersao_km = calcular_media(dados_formatados, 'Dispersao_KM', ignora_percentual=True)
     media_rating = calcular_media(dados_formatados, 'Rating')
-    media_reposicao = calcular_media(dados_formatados, 'Reposicao_Valor', ignora_percentual=True)
+    soma_reposicao = sum(
+        float(item['Reposicao_Valor'].replace(',', '.')) 
+        for item in dados_formatados 
+        if item['Reposicao_Valor'] not in (None, '', 'N/A', '-')
+    )
     media_refugo = calcular_media(dados_formatados, 'Refugo_Porcentagem', ignora_percentual=True)
 
     return render_template('painel.html', dados=dados_formatados, observacoes=observacoes,
@@ -159,7 +163,7 @@ def painel():
                            'Devolucao_Porcentagem': media_devolucao_porcentagem,
                            'Dispersao_KM': media_dispersao_km,
                            'Rating': media_rating,
-                           'Reposicao_Valor': media_reposicao,
+                           'Reposicao_Valor': f"{soma_reposicao:.2f}".replace('.', ','),
                            'Refugo_Porcentagem': media_refugo
 })
 
@@ -247,8 +251,8 @@ def painel_supervisor():
                     'Data': data_formatada,
                     'Devolucao_Porcentagem': devolucao_porcentagem_valor,
                     'Dispersao_KM': dispersao,
-                    'Rating': rating,
-                    'Reposicao_Valor': reposicao,
+                    'Rating': rating.replace(',00', ''),
+                    'Reposicao_Valor': reposicao.replace('.', ','),
                     'Refugo_Porcentagem': refugo
                 })
 
@@ -261,14 +265,19 @@ def painel_supervisor():
     media_devolucao_porcentagem = calcular_media(dados_formatados, 'Devolucao_Porcentagem', ignora_percentual=True)
     media_dispersao_km = calcular_media(dados_formatados, 'Dispersao_KM', ignora_percentual=True)
     media_rating = calcular_media(dados_formatados, 'Rating')
-    media_reposicao = calcular_media(dados_formatados, 'Reposicao_Valor', ignora_percentual=True)
+    soma_reposicao = sum(
+        float(item['Reposicao_Valor'].replace(',', '.')) 
+        for item in dados_formatados 
+        if item['Reposicao_Valor'] not in (None, '', 'N/A', '-')
+    )
+
     media_refugo = calcular_media(dados_formatados, 'Refugo_Porcentagem', ignora_percentual=True)
 
     medias = {
         'Devolucao_Porcentagem': media_devolucao_porcentagem,
         'Dispersao_KM': media_dispersao_km,
         'Rating': media_rating,
-        'Reposicao_Valor': media_reposicao,
+        'Reposicao_Valor': f"{soma_reposicao:.2f}".replace('.', ','),
         'Refugo_Porcentagem': media_refugo
     }
 
@@ -319,4 +328,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
