@@ -68,14 +68,14 @@ Esses filtros tornam a visualização mais prática e direcionada.
 
 > Abaixo, print de algumas **telas da interface**:
 
-```markdown
-![Tela de Login](https://github.com/joaovnborato/Consulta-Indicadores/blob/main/images/login.png)
-![Painel de Indicadores 1/2](images/painel1.png)
-![Painel de Indicadores 2/2](images/painel2.png)
-![Tela de Detalhamento 1/2](images/tela-explicacoes1.png)
-![Tela de Detalhamento 2/2](images/tela-explicacoes2.png)
-![Painel do Gerente 1/2](images/tela-gerente1.png)
-![Painel do Gerente 2/2](images/tela-gerente2.png)
+![Tela de Login](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/login.png)  
+![Painel de Indicadores 1/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/painel1.png)  
+![Painel de Indicadores 2/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/painel2.png)  
+![Tela de Detalhamento 1/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/tela-explicacoes1.png)  
+![Tela de Detalhamento 2/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/tela-explicacoes2.png)  
+![Painel do Gerente 1/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/tela-gerente1.png)  
+![Painel do Gerente 2/2](https://raw.githubusercontent.com/joaovnborato/Consulta-Indicadores/main/images/tela-gerente2.png)
+
 ```
 
 ---
